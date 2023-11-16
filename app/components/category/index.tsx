@@ -39,7 +39,6 @@ const Main: FC<ICategoryProps> = ({
                 setModelVisible(false)
                 setCurrAppInfo(v)
                 onSelect?.(v)
-                // TODO:fetchChatHistory()
               }}>{v.appName}</button>
             )
           })}

@@ -25,7 +25,6 @@ const Main: FC = () => {
   const media = useBreakpoints()
   const isMobile = media === MediaType.mobile
   const hasSetAppConfig = APP_ID && API_KEY
-  console.log(hasSetAppConfig)
 
   /*
   * app info
@@ -177,9 +176,6 @@ const Main: FC = () => {
    * category info
    */
   const handleCategoryChange = (category: IKnowledgeItem) => {
-    // setChatList([])
-    // setConversationList([])
-    // handleStartChat()
     (async () => {
       try {
         const [conversationData, appParams] = await Promise.all([fetchConversations(), fetchAppParams()])
@@ -253,7 +249,6 @@ const Main: FC = () => {
 
         // handle current conversation id
         const { data: conversations } = conversationData as { data: ConversationItem[] }
-        console.log(conversations)
         const _conversationId = getConversationIdFromStorage(APP_ID)
         const isNotNewConversation = conversations.some(item => item.id === _conversationId)
 
@@ -279,11 +274,9 @@ const Main: FC = () => {
       }
       catch (e: any) {
         if (e.status === 404) {
-          console.log('404', e)
           setAppUnavailable(true)
         }
         else {
-          console.log('else err', e)
           setIsUnknwonReason(true)
           setAppUnavailable(true)
         }
