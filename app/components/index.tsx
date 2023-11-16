@@ -11,7 +11,7 @@ import Sidebar from '@/app/components/sidebar'
 import ConfigSence from '@/app/components/config-scence'
 import Header from '@/app/components/header'
 import { fetchAppParams, fetchChatList, fetchConversations, sendChatMessage, updateFeedback } from '@/service'
-import type { ConversationItem, Feedbacktype, IChatItem, PromptConfig } from '@/types/app'
+import type { ConversationItem, Feedbacktype, IChatItem, IKnowledgeItem, PromptConfig } from '@/types/app'
 import Chat from '@/app/components/chat'
 import { setLocaleOnClient } from '@/i18n/client'
 import useBreakpoints, { MediaType } from '@/hooks/use-breakpoints'
@@ -25,6 +25,7 @@ const Main: FC = () => {
   const media = useBreakpoints()
   const isMobile = media === MediaType.mobile
   const hasSetAppConfig = APP_ID && API_KEY
+  console.log(hasSetAppConfig)
 
   /*
   * app info
@@ -172,32 +173,13 @@ const Main: FC = () => {
     }))
   }
 
-  // sometime introduction is not applied to state
-  const generateNewChatListWithOpenstatement = (introduction?: string, inputs?: Record<string, any> | null) => {
-    let caculatedIntroduction = introduction || conversationIntroduction || ''
-    const caculatedPromptVariables = inputs || currInputs || null
-    if (caculatedIntroduction && caculatedPromptVariables)
-      caculatedIntroduction = replaceVarWithValues(caculatedIntroduction, promptConfig?.prompt_variables || [], caculatedPromptVariables)
-
-    const openstatement = {
-      id: `${Date.now()}`,
-      content: caculatedIntroduction,
-      isAnswer: true,
-      feedbackDisabled: true,
-      isOpeningStatement: isShowPrompt,
-    }
-    if (caculatedIntroduction)
-      return [openstatement]
-
-    return []
-  }
-
-  // init
-  useEffect(() => {
-    if (!hasSetAppConfig) {
-      setAppUnavailable(true)
-      return
-    }
+  /**
+   * category info
+   */
+  const handleCategoryChange = (category: IKnowledgeItem) => {
+    // setChatList([])
+    // setConversationList([])
+    // handleStartChat()
     (async () => {
       try {
         const [conversationData, appParams] = await Promise.all([fetchConversations(), fetchAppParams()])
@@ -232,6 +214,76 @@ const Main: FC = () => {
           setAppUnavailable(true)
         }
         else {
+          setIsUnknwonReason(true)
+          setAppUnavailable(true)
+        }
+      }
+    })()
+  }
+
+  // sometime introduction is not applied to state
+  const generateNewChatListWithOpenstatement = (introduction?: string, inputs?: Record<string, any> | null) => {
+    let caculatedIntroduction = introduction || conversationIntroduction || ''
+    const caculatedPromptVariables = inputs || currInputs || null
+    if (caculatedIntroduction && caculatedPromptVariables)
+      caculatedIntroduction = replaceVarWithValues(caculatedIntroduction, promptConfig?.prompt_variables || [], caculatedPromptVariables)
+
+    const openstatement = {
+      id: `${Date.now()}`,
+      content: caculatedIntroduction,
+      isAnswer: true,
+      feedbackDisabled: true,
+      isOpeningStatement: isShowPrompt,
+    }
+    if (caculatedIntroduction)
+      return [openstatement]
+
+    return []
+  }
+
+  // init
+  useEffect(() => {
+    if (!hasSetAppConfig) {
+      setAppUnavailable(true)
+      return
+    }
+    (async () => {
+      try {
+        const [conversationData, appParams] = await Promise.all([fetchConversations(), fetchAppParams()])
+
+        // handle current conversation id
+        const { data: conversations } = conversationData as { data: ConversationItem[] }
+        console.log(conversations)
+        const _conversationId = getConversationIdFromStorage(APP_ID)
+        const isNotNewConversation = conversations.some(item => item.id === _conversationId)
+
+        // fetch new conversation info
+        const { user_input_form, opening_statement: introduction }: any = appParams
+        setLocaleOnClient(APP_INFO.default_language, true)
+        setNewConversationInfo({
+          name: t('app.chat.newChatDefaultName'),
+          introduction,
+        })
+        const prompt_variables = userInputsFormToPromptVariables(user_input_form)
+        setPromptConfig({
+          prompt_template: promptTemplate,
+          prompt_variables,
+        } as PromptConfig)
+
+        setConversationList(conversations as ConversationItem[])
+
+        if (isNotNewConversation)
+          setCurrConversationId(_conversationId, APP_ID, false)
+
+        setInited(true)
+      }
+      catch (e: any) {
+        if (e.status === 404) {
+          console.log('404', e)
+          setAppUnavailable(true)
+        }
+        else {
+          console.log('else err', e)
           setIsUnknwonReason(true)
           setAppUnavailable(true)
         }
@@ -365,6 +417,7 @@ const Main: FC = () => {
     return (
       <Sidebar
         list={conversationList}
+        onCategoryChange={handleCategoryChange}
         onCurrentIdChange={handleConversationIdChange}
         currentId={currConversationId}
         copyRight={APP_INFO.copyright || APP_INFO.title}

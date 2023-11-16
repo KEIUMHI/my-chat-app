@@ -11,7 +11,7 @@ export const APP_INFO: AppInfo = {
 }
 
 export const isShowPrompt = false
-export const promptTemplate = 'I want you to act as a javascript console.'
+export const promptTemplate = '欢迎来到AI知识库，你的企业得力助手~'
 
 export const API_PREFIX = '/api'
 

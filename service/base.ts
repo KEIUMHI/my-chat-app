@@ -66,7 +66,8 @@ const handleStream = (response: any, onData: IOnData, onCompleted?: IOnCompleted
             return
           try {
             bufferObj = JSON.parse(message.substring(6)) // remove data: and parse as json
-          } catch (e) {
+          }
+          catch (e) {
             // mute handle message cut off
             onData('', isFirstMessage, {
               conversationId: bufferObj?.conversation_id,

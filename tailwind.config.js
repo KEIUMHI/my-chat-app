@@ -59,8 +59,12 @@ module.exports = {
       },
     },
   },
+  daisyui: {
+    themes: ['light', 'dark', 'cupcake'],
+  },
   plugins: [
     require('@tailwindcss/typography'),
     require('@tailwindcss/line-clamp'),
+    require('daisyui'),
   ],
 }

@@ -95,3 +95,10 @@ export type AppInfo = {
   copyright?: string
   privacy_policy?: string
 }
+
+export type IKnowledgeItem = {
+  appId: string
+  apiKey: string
+  apiUrl: string
+  appName: string
+}

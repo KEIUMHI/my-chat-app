@@ -8,7 +8,8 @@ import {
 import { ChatBubbleOvalLeftEllipsisIcon as ChatBubbleOvalLeftEllipsisSolidIcon } from '@heroicons/react/24/solid'
 import Button from '@/app/components/base/button'
 // import Card from './card'
-import type { ConversationItem } from '@/types/app'
+import type { ConversationItem, IKnowledgeItem } from '@/types/app'
+import Category from '@/app/components/category'
 
 function classNames(...classes: any[]) {
   return classes.filter(Boolean).join(' ')
@@ -20,6 +21,7 @@ export type ISidebarProps = {
   copyRight: string
   currentId: string
   onCurrentIdChange: (id: string) => void
+  onCategoryChange: (detail: IKnowledgeItem) => void
   list: ConversationItem[]
 }
 
@@ -27,13 +29,23 @@ const Sidebar: FC<ISidebarProps> = ({
   copyRight,
   currentId,
   onCurrentIdChange,
+  onCategoryChange,
   list,
 }) => {
   const { t } = useTranslation()
+  const onCategorySelected = (detail: IKnowledgeItem) => {
+    console.log(detail)
+    onCategoryChange(detail)
+  }
   return (
     <div
       className="shrink-0 flex flex-col overflow-y-auto bg-white pc:w-[244px] tablet:w-[192px] mobile:w-[240px]  border-r border-gray-200 tablet:h-[calc(100vh_-_3rem)] mobile:h-screen"
     >
+      <div className="flex-shrink-0 p-4 !pb-0">
+        <Category
+          onSelect={onCategorySelected}
+        ></Category>
+      </div>
       {list.length < MAX_CONVERSATION_LENTH && (
         <div className="flex flex-shrink-0 p-4 !pb-0">
           <Button

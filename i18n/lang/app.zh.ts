@@ -5,6 +5,7 @@ const translation = {
     appUnkonwError: '应用不可用',
   },
   chat: {
+    category: '类目',
     newChat: '新对话',
     newChatDefaultName: '新的对话',
     openingStatementTitle: '对话开场白',

@@ -1,0 +1,17 @@
+.modal-wrap-enter {
+  opacity: 0;
+}
+
+.modal-wrap-enter-active {
+  opacity: 1;
+  transition: opacity 200ms;
+}
+
+.modal-wrap-exit {
+  opacity: 1;
+}
+
+.modal-wrap-exit-active {
+  opacity: 0;
+  transition: opacity 200ms;
+}
