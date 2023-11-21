@@ -19,6 +19,7 @@ import Loading from '@/app/components/base/loading'
 import { replaceVarWithValues, userInputsFormToPromptVariables } from '@/utils/prompt'
 import AppUnavailable from '@/app/components/app-unavailable'
 import { API_KEY, APP_ID, APP_INFO, isShowPrompt, promptTemplate } from '@/config'
+import { getAppInfoFromStorage } from '@/utils/appInfo'
 
 const Main: FC = () => {
   const { t } = useTranslation()
@@ -141,7 +142,7 @@ const Main: FC = () => {
       setConversationIdChangeBecauseOfNew(false)
     }
     // trigger handleConversationSwitch
-    setCurrConversationId(id, APP_ID)
+    setCurrConversationId(id, getAppInfoFromStorage()?.appId || APP_ID)
     hideSidebar()
   }
 
@@ -178,11 +179,15 @@ const Main: FC = () => {
   const handleCategoryChange = (category: IKnowledgeItem) => {
     (async () => {
       try {
+        const appId = category.appId || APP_ID
+
         const [conversationData, appParams] = await Promise.all([fetchConversations(), fetchAppParams()])
 
         // handle current conversation id
         const { data: conversations } = conversationData as { data: ConversationItem[] }
-        const _conversationId = getConversationIdFromStorage(APP_ID)
+        // const _conversationId = getConversationIdFromStorage(appId)
+        const _conversationId = conversations.length > 0 ? conversations[0].id : '-1'
+
         const isNotNewConversation = conversations.some(item => item.id === _conversationId)
 
         // fetch new conversation info
@@ -199,9 +204,8 @@ const Main: FC = () => {
         } as PromptConfig)
 
         setConversationList(conversations as ConversationItem[])
-
         if (isNotNewConversation)
-          setCurrConversationId(_conversationId, APP_ID, false)
+          setCurrConversationId(_conversationId, appId, false)
 
         setInited(true)
       }
@@ -377,7 +381,7 @@ const Main: FC = () => {
         setConversationIdChangeBecauseOfNew(false)
         resetNewConversationInputs()
         setChatNotStarted()
-        setCurrConversationId(tempNewConversationId, APP_ID, true)
+        setCurrConversationId(tempNewConversationId, getAppInfoFromStorage()?.appId || APP_ID, true)
       },
       onError() {
         setResponsingFalse()
