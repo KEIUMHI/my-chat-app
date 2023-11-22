@@ -206,6 +206,8 @@ const Main: FC = () => {
         setConversationList(conversations as ConversationItem[])
         if (isNotNewConversation)
           setCurrConversationId(_conversationId, appId, false)
+        else
+          setCurrConversationId('-1', appId)
 
         setInited(true)
       }
@@ -253,7 +255,7 @@ const Main: FC = () => {
 
         // handle current conversation id
         const { data: conversations } = conversationData as { data: ConversationItem[] }
-        const _conversationId = getConversationIdFromStorage(APP_ID)
+        const _conversationId = getConversationIdFromStorage(APP_ID) || conversations?.[0]?.id
         const isNotNewConversation = conversations.some(item => item.id === _conversationId)
 
         // fetch new conversation info
