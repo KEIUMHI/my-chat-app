@@ -5,13 +5,13 @@ import Button from '@/app/components/base/button'
 import Modal from '@/app/components/base/modal'
 import knowledgeLibs from '@/libs/knowledge'
 import type { IKnowledgeItem } from '@/types/app'
-import { setCurrAppInfo } from '@/utils/appInfo'
+import { setCurrAppId } from '@/utils/appInfo'
 
 export type ICategoryProps = {
   onSelect?: (e: IKnowledgeItem) => void
 }
 
-setCurrAppInfo(knowledgeLibs[0])
+setCurrAppId(knowledgeLibs[0].appId)
 
 const Main: FC<ICategoryProps> = ({
   onSelect,
@@ -37,7 +37,7 @@ const Main: FC<ICategoryProps> = ({
               <button className="btn btn-sm ms-2 my-2" key={v.appId} onClick={() => {
                 setLabel(v.appName)
                 setModelVisible(false)
-                setCurrAppInfo(v)
+                setCurrAppId(v.appId)
                 onSelect?.(v)
               }}>{v.appName}</button>
             )

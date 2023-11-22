@@ -19,7 +19,7 @@ import Loading from '@/app/components/base/loading'
 import { replaceVarWithValues, userInputsFormToPromptVariables } from '@/utils/prompt'
 import AppUnavailable from '@/app/components/app-unavailable'
 import { API_KEY, APP_ID, APP_INFO, isShowPrompt, promptTemplate } from '@/config'
-import { getAppInfoFromStorage } from '@/utils/appInfo'
+import { getAppIdFromStorage } from '@/utils/appInfo'
 
 const Main: FC = () => {
   const { t } = useTranslation()
@@ -142,7 +142,7 @@ const Main: FC = () => {
       setConversationIdChangeBecauseOfNew(false)
     }
     // trigger handleConversationSwitch
-    setCurrConversationId(id, getAppInfoFromStorage()?.appId || APP_ID)
+    setCurrConversationId(id, getAppIdFromStorage() || APP_ID)
     hideSidebar()
   }
 
@@ -383,7 +383,7 @@ const Main: FC = () => {
         setConversationIdChangeBecauseOfNew(false)
         resetNewConversationInputs()
         setChatNotStarted()
-        setCurrConversationId(tempNewConversationId, getAppInfoFromStorage()?.appId || APP_ID, true)
+        setCurrConversationId(tempNewConversationId, getAppIdFromStorage() || APP_ID, true)
       },
       onError() {
         setResponsingFalse()
