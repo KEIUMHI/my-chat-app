@@ -206,10 +206,12 @@ const Main: FC = () => {
         setConversationList(conversations as ConversationItem[])
         if (isNotNewConversation) {
           setCurrConversationId(_conversationId, appId, false)
+          setChatStarted()
           setConversationIdChangeBecauseOfNew(false)
         }
         else {
           setCurrConversationId('-1', appId, false)
+          setChatNotStarted()
         }
 
         setInited(true)
