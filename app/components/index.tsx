@@ -204,10 +204,13 @@ const Main: FC = () => {
         } as PromptConfig)
 
         setConversationList(conversations as ConversationItem[])
-        if (isNotNewConversation)
+        if (isNotNewConversation) {
           setCurrConversationId(_conversationId, appId, false)
-        else
-          setCurrConversationId('-1', appId)
+          setConversationIdChangeBecauseOfNew(false)
+        }
+        else {
+          setCurrConversationId('-1', appId, false)
+        }
 
         setInited(true)
       }
